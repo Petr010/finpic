@@ -1,7 +1,14 @@
 import cv2
 
+external_cam_index = 2  # Change this index accordingly
+
 # Open the webcam (default webcam, can be changed if multiple webcams are connected)
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(external_cam_index, cv2.CAP_DSHOW)
+
+cap.set(cv2.CAP_PROP_SETTINGS, 1)
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # Check if the webcam is opened correctly
 if not cap.isOpened():
@@ -23,7 +30,7 @@ while True:
 
     # Display the resulting frame
     cv2.imshow('Original', frame)
-    cv2.imshow('Grayscale', gray_frame)
+    # cv2.imshow('Grayscale', gray_frame)
 
     # Break the loop when 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
