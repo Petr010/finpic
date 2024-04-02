@@ -39,59 +39,62 @@ async def collage():
     cv2.imwrite("finpic.jpg", blank_image)
 
 # Initialize MediaPipe hands module
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands()
+async def main():
+    mp_hands = mp.solutions.hands
+    hands = mp_hands.Hands()
 
-# Initialize webcam
-external_cam_index = 2  # Change this index accordingly
+    # Initialize webcam
+    external_cam_index = 2  # Change this index accordingly
 
-# Open the webcam (default webcam, can be changed if multiple webcams are connected)
-cap = cv2.VideoCapture(external_cam_index, cv2.CAP_DSHOW)
+    # Open the webcam (default webcam, can be changed if multiple webcams are connected)
+    cap = cv2.VideoCapture(external_cam_index, cv2.CAP_DSHOW)
 
-cap.set(cv2.CAP_PROP_SETTINGS, 1)
+    cap.set(cv2.CAP_PROP_SETTINGS, 1)
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1000)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1000)
 
-# initialies first pic
-first_time = 1
+    # initialies first pic
+    first_time = 1
 
-while cap.isOpened():
-    # Read frame from webcam
-    ret, frame = cap.read()
-    if not ret:
-        break
-    
-    # Convert BGR image to RGB
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
-    # Process the frame with MediaPipe
-    results = hands.process(frame_rgb)
-    
-    # Check if hand(s) detected
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            # Calculate landmark positions
-            landmarks = []
-            for landmark in hand_landmarks.landmark:
-                x, y, _ = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]), int(landmark.z * frame.shape[1])
-                landmarks.append((x, y))
-            
-            # Check for peace sign gesture
-            if is_peace_sign(landmarks):
-                # Save a screenshot
-                # screenshot_filename = "peace_sign_screenshot.jpg"
-                # cv2.imwrite(screenshot_filename, frame)
-                # cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                collage()
-    
-    # Display frame
-    cv2.imshow('Hand Gestures', frame)
-    
-    # Break the loop when 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    while cap.isOpened():
+        # Read frame from webcam
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Convert BGR image to RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        # Process the frame with MediaPipe
+        results = hands.process(frame_rgb)
+        
+        # Check if hand(s) detected
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                # Calculate landmark positions
+                landmarks = []
+                for landmark in hand_landmarks.landmark:
+                    x, y, _ = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]), int(landmark.z * frame.shape[1])
+                    landmarks.append((x, y))
+                
+                # Check for peace sign gesture
+                if is_peace_sign(landmarks):
+                    # Save a screenshot
+                    # screenshot_filename = "peace_sign_screenshot.jpg"
+                    # cv2.imwrite(screenshot_filename, frame)
+                    # cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    await collage()
+        
+        # Display frame
+        cv2.imshow('Hand Gestures', frame)
+        
+        # Break the loop when 'q' is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-# Release resources
-cap.release()
-cv2.destroyAllWindows()
+    # Release resources
+    cap.release()
+    cv2.destroyAllWindows()
+
+asyncio.run(main())
