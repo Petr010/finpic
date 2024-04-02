@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import random
+import time
 
 # Function to check if peace sign gesture is detected
 def is_peace_sign(landmarks):
@@ -47,8 +48,8 @@ cap.set(cv2.CAP_PROP_SETTINGS, 1)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1000)
 
-# Flag to indicate if a frame has been captured after detecting the gesture
-frame_captured = False
+# Flag to indicate if frames should be captured
+capture_frames = False
 
 while cap.isOpened():
     # Read frame from webcam
@@ -73,15 +74,21 @@ while cap.isOpened():
             
             # Check for peace sign gesture
             if is_peace_sign(landmarks):
-                # Capture frame if not already captured
-                if not frame_captured:
-                    # Save a screenshot
-                    screenshot_filename = "peace_sign_screenshot.jpg"
-                    cv2.imwrite(screenshot_filename, frame)
-                    frame_captured = True
-                    # Uncomment the following line if you want to exit the loop after capturing the frame
-                    # break
+                # Start capturing frames
+                capture_frames = True
     
+    # Capture frames after detecting the gesture
+    if capture_frames:
+        # Save a screenshot
+        screenshot_filename = f"peace_sign_screenshot_{time.time()}.jpg"
+        cv2.imwrite(screenshot_filename, frame)
+        
+        # Delay for a short duration to prevent capturing additional frames in quick succession
+        time.sleep(1)  # Adjust the duration as needed
+        
+        # Stop capturing frames
+        capture_frames = False
+
     # Display frame
     cv2.imshow('Hand Gestures', frame)
     
