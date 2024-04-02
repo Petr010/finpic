@@ -19,6 +19,21 @@ def is_peace_sign(landmarks):
     else:
         return False
 
+def collage(overlay_image):
+    blank_image = cv2.imread('blank_image.jpg')
+    overlay_image_resized = cv2.resize(overlay_image, (200, 200))
+
+    # Define the position where you want to overlay the resized image on the blank image
+    # Let's place it in the top-left corner for this example
+    x_offset = 50  # x-coordinate of the top-left corner of the overlay image on the blank image
+    y_offset = 50  # y-coordinate of the top-left corner of the overlay image on the blank image
+
+    # Overlay the resized image onto the blank image
+    blank_image[y_offset:y_offset+overlay_image_resized.shape[0], 
+                x_offset:x_offset+overlay_image_resized.shape[1]] = overlay_image_resized
+
+    # Save the resulting image
+    cv2.imwrite('result_image.jpg', blank_image)
 
 # Initialize MediaPipe hands module
 mp_hands = mp.solutions.hands
@@ -63,6 +78,7 @@ while cap.isOpened():
                 screenshot_filename = "peace_sign_screenshot.jpg"
                 cv2.imwrite(screenshot_filename, frame)
                 cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                collage(screenshot_filename)
                 time.sleep(2)
 
     
