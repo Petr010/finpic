@@ -80,13 +80,10 @@ while cap.isOpened():
             # Check for peace sign gesture
             if is_peace_sign(landmarks):
                 # Save a screenshot
-                screenshot_filename = "peace_sign_screenshot.jpg"
-                cv2.imwrite(screenshot_filename, frame)
+                # screenshot_filename = "peace_sign_screenshot.jpg"
+                # cv2.imwrite(screenshot_filename, frame)
                 # cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                if first_time == 1:
-                    collage(screenshot_filename)
-                    first_time = 0
-            else: first_time = 1
+                collage()
     
     # Display frame
     cv2.imshow('Hand Gestures', frame)
