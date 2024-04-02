@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import random
 
 # Function to check if peace sign gesture is detected
 def is_peace_sign(landmarks):
