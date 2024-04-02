@@ -22,12 +22,12 @@ if not cap.isOpened():
 
 while True:
     # Capture frame-by-frame
-    # ret, frame = cap.read()
+    ret, frame = cap.read()
 
-    # # If frame is not read correctly, exit the loop
-    # if not ret:
-    #     print("Error: Can't receive frame from the webcam")
-    #     break
+    # If frame is not read correctly, exit the loop
+    if not ret:
+        print("Error: Can't receive frame from the webcam")
+        break
     
     _, img = cap.read()
     cv2.rectangle(img, (300, 300), (100, 100), (0, 255, 0), 0)
