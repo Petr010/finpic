@@ -1,3 +1,4 @@
+import time
 import cv2
 import mediapipe as mp
 
@@ -58,9 +59,12 @@ while cap.isOpened():
             # Check for peace sign gesture
             if is_peace_sign(landmarks):
                 # Save a screenshot
+                time.sleep(2)
                 screenshot_filename = "peace_sign_screenshot.jpg"
                 cv2.imwrite(screenshot_filename, frame)
                 cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                time.sleep(2)
+
     
     # Display frame
     cv2.imshow('Hand Gestures', frame)
