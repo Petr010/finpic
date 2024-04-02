@@ -1,4 +1,5 @@
 import time
+import random
 import cv2
 import mediapipe as mp
 
@@ -20,20 +21,18 @@ def is_peace_sign(landmarks):
         return False
 
 def collage(overlay_image):
-    blank_image = cv2.imread('blank_image.jpg')
-    overlay_image_resized = cv2.resize(overlay_image, (200, 200))
-
+    blank_image = cv2.imread("finpic.jpg")
+    overlay_image_resized =  cv2.imread(overlay_image)
     # Define the position where you want to overlay the resized image on the blank image
     # Let's place it in the top-left corner for this example
-    x_offset = 50  # x-coordinate of the top-left corner of the overlay image on the blank image
-    y_offset = 50  # y-coordinate of the top-left corner of the overlay image on the blank image
-
+    x_offset = random.randint(0, 1000)  # x-coordinate of the top-left corner of the overlay image on the blank image
+    y_offset = random.randint(0, 3000)  # y-coordinate of the top-left corner of the overlay image on the blank image
     # Overlay the resized image onto the blank image
     blank_image[y_offset:y_offset+overlay_image_resized.shape[0], 
                 x_offset:x_offset+overlay_image_resized.shape[1]] = overlay_image_resized
 
     # Save the resulting image
-    cv2.imwrite('result_image.jpg', blank_image)
+    cv2.imwrite("finpic.jpg", blank_image)
 
 # Initialize MediaPipe hands module
 mp_hands = mp.solutions.hands
@@ -47,8 +46,11 @@ cap = cv2.VideoCapture(external_cam_index, cv2.CAP_DSHOW)
 
 cap.set(cv2.CAP_PROP_SETTINGS, 1)
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1000)
+
+# initialies first pic
+first_time = 1
 
 while cap.isOpened():
     # Read frame from webcam
@@ -74,13 +76,13 @@ while cap.isOpened():
             # Check for peace sign gesture
             if is_peace_sign(landmarks):
                 # Save a screenshot
-                time.sleep(2)
                 screenshot_filename = "peace_sign_screenshot.jpg"
                 cv2.imwrite(screenshot_filename, frame)
-                cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                collage(screenshot_filename)
-                time.sleep(2)
-
+                # cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                if first_time == 1:
+                    collage(screenshot_filename)
+                    first_time = 0
+            else: first_time = 1
     
     # Display frame
     cv2.imshow('Hand Gestures', frame)
