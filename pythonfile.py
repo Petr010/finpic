@@ -21,7 +21,7 @@ def is_peace_sign(landmarks):
     else:
         return False
 
-async def collage():
+async def collage(frame):
     screenshot_filename = "peace_sign_screenshot.jpg"
     asyncio.sleep(1)
     cv2.imwrite(screenshot_filename, frame)
@@ -84,7 +84,7 @@ async def main():
                     # screenshot_filename = "peace_sign_screenshot.jpg"
                     # cv2.imwrite(screenshot_filename, frame)
                     # cv2.putText(frame, 'Peace Sign Detected', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    await collage()
+                    await collage(frame)
         
         # Display frame
         cv2.imshow('Hand Gestures', frame)
