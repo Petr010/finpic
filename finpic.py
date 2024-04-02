@@ -21,18 +21,26 @@ def is_peace_sign(landmarks):
         return False
 
 def collage(overlay_image):
-    blank_image = cv2.imread("finpic.jpg")
-    overlay_image_resized =  cv2.imread(overlay_image)
+    blank_image = cv2.imread("finpic.jpg") # og canvas 4000 x 2250
+    y_bi, x_bi, channels = blank_image.shape
+    overlay_image_in =  cv2.imread(overlay_image)
+    y_oi, x_oi, channels = overlay_image_in.shape
     # Define the position where you want to overlay the resized image on the blank image
     # Let's place it in the top-left corner for this example
-    x_offset = random.randint(0, 1000)  # x-coordinate of the top-left corner of the overlay image on the blank image
-    y_offset = random.randint(0, 3000)  # y-coordinate of the top-left corner of the overlay image on the blank image
+    x_offset = random.randint(0, x_bi-1-x_oi)  # x-coordinate of the top-left corner of the overlay image on the blank image
+    y_offset = random.randint(0, y_bi-1-y_oi)  # y-coordinate of the top-left corner of the overlay image on the blank image 
     # Overlay the resized image onto the blank image
-    blank_image[y_offset:y_offset+overlay_image_resized.shape[0], 
-                x_offset:x_offset+overlay_image_resized.shape[1]] = overlay_image_resized
+    print(x_offset, y_offset)
+    blank_image[y_offset:y_offset+overlay_image_in.shape[0], 
+                x_offset:x_offset+overlay_image_in.shape[1]] = overlay_image_in
 
     # Save the resulting image
     cv2.imwrite("finpic.jpg", blank_image)
+    displayable = cv2.imread("finpic.jpg")
+    # Create a window with adjustable size
+    cv2.namedWindow('finpic', cv2.WINDOW_NORMAL)
+    # Display the image
+    cv2.imshow('finpic', displayable)
 
 # Initialize MediaPipe hands module
 mp_hands = mp.solutions.hands
@@ -46,11 +54,16 @@ cap = cv2.VideoCapture(external_cam_index, cv2.CAP_DSHOW)
 
 cap.set(cv2.CAP_PROP_SETTINGS, 1)
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1000)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1000)
+x_pix = 500
+y_pix = 285
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, x_pix)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, y_pix)
 
 # initialies first pic
 first_time = 1
+# Set the rotation angle for vertical orientation
+rotation_angle = -90
 
 while cap.isOpened():
     # Read frame from webcam
@@ -58,6 +71,13 @@ while cap.isOpened():
     if not ret:
         break
     
+    if rotation_angle == -90:
+        # rotated
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        temp = x_pix
+        x_pix = y_pix
+        y_pix = temp
+
     # Convert BGR image to RGB
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     
